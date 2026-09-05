@@ -1,6 +1,12 @@
 import os
 import streamlit as st
-from groq import Groq
+
+# Fallback error handling for missing dependencies
+try:
+    from groq import Groq
+    GROQ_INSTALLED = True
+except ImportError:
+    GROQ_INSTALLED = False
 
 # Page layout configuration
 st.set_page_config(page_title="AI Content Assistant", page_icon="✍️", layout="centered")
@@ -8,10 +14,26 @@ st.set_page_config(page_title="AI Content Assistant", page_icon="✍️", layout
 st.title("✍️ AI Content Assistant")
 st.write("Generate tailored posts, captions, and hashtags for any platform.")
 
+# Display friendly error if groq package is missing
+if not GROQ_INSTALLED:
+    st.error("⚠️ **Missing Required Library: `groq`**")
+    st.info(
+        """
+        **How to fix this issue:**
+        1. **Locally:** Run `pip install groq` in your terminal.
+        2. **Streamlit Cloud:** Ensure you have a file named `requirements.txt` in the main folder of your GitHub repository containing:
+           ```text
+           streamlit
+           groq
+           ```
+        3. Reboot your app from **Manage app** $\rightarrow$ **Reboot**.
+        """
+    )
+    st.stop()  # Stop execution until dependency issue is resolved
+
 # Sidebar for API Key configuration
 with st.sidebar:
     st.header("Configuration")
-    # Check if API key exists in secrets or environment, otherwise prompt for user input
     groq_api_key = os.getenv("GROQ_API_KEY") or st.text_input(
         "Groq API Key", type="password", help="Get a free key at https://console.groq.com"
     )
@@ -77,4 +99,4 @@ if st.button("Generate Content", type="primary"):
             )
 
         except Exception as e:
-            st.error(f"An error occurred: {e}")
+            st.error(f"An error occurred while generating content: {e}")
