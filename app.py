@@ -38,7 +38,7 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("**Model Settings**")
-    st.info("⚡ Powered by `llama-3.3-70b-versatile` (Free)")
+    st.info("⚡ Powered by `openai/gpt-oss-120b` (Free)")
 
 # Input controls
 col1, col2 = st.columns(2)
@@ -78,7 +78,7 @@ if st.button("Generate Content", type="primary"):
 
             with st.spinner("Generating content..."):
                 response = client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
+                    model="openai/gpt-oss-120b",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7,
                 )
